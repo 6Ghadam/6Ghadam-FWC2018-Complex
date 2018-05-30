@@ -45,7 +45,7 @@ function getRequest(url, callback) {
 module.exports = function(verification) {
 
 	var baseURL = 'https://api.kavenegar.com/v1/@/verify/lookup.json'
-	var token = '33434D58303256744D72316F674A54755734616176413D3D'
+	var token = '33596B704E5678656A333150565A455A56645A6B55574A47723331797453492F'
 
 	var begURL = baseURL.replace('@', token)
 

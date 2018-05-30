@@ -1,0 +1,29 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mongoDs": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "",
+    "database": "6GhadamFifaWorldCup2018DB",
+    "name": "mongoDs",
+    "maxRows": 2000,
+    "connector": "mongodb"
+  },
+  "fileStorage": {
+    "name": "fileStorage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./fileStorage",
+    "maxFileSize": "52428800"
+  },
+  "ZPSoapDS": {
+    "url": "https://www.zarinpal.com/pg/services/WebGate/service",
+    "name": "ZPSoapDS",
+    "wsdl": "https://www.zarinpal.com/pg/services/WebGate/wsdl",
+    "remotingEnabled": true,
+    "connector": "soap"
+  }
+}

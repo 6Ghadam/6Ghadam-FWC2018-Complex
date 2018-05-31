@@ -38,10 +38,11 @@ module.exports = function (WebServiceWebServiceSoap12) {
         "Mobile": RequestPayment.Mobile,
         "ResNumber": RequestPayment.ResNumber.toString(),
         "ReturnPath": RequestPayment.ReturnPath,
-        "ResultStatus": response.ResultStatus,
-        "PaymentPath": response.PaymentPath,
+        "ResultStatus": response.RequestPaymentResult.ResultStatus,
+        "PaymentPath": response.RequestPaymentResult.PaymentPath,
         "RefNumber": RequestPayment.ResNumber.toString(),
       }
+      console.log(data)
       transaction.create(data, function (err, result) {
         if (err)
           return callback(err, null)
@@ -66,8 +67,8 @@ module.exports = function (WebServiceWebServiceSoap12) {
         if (err)
           return callback(err, null)
         var data = {
-          "VerificationStatus": response.ResultStatus.toString(),
-          "PayementedPrice": Number(response.PayementedPrice)
+          "VerificationStatus": response.VerifyPaymentResult.ResultStatus.toString(),
+          "PayementedPrice": Number(response.VerifyPaymentResult.PayementedPrice)
         }
         if (transactionInst[0].RefNumber !== '0')
           return callback(err, null)
@@ -75,7 +76,7 @@ module.exports = function (WebServiceWebServiceSoap12) {
           if (err)
             return callback(err, null)
           var status = 'Successful'
-          if (response.Status !== 'Success') 
+          if (response.VerifyPaymentResult.ResultStatus !== 'Success') 
             status = response.Status
           var data = {
             "time": Math.floor((new Date).getTime()),
@@ -85,6 +86,7 @@ module.exports = function (WebServiceWebServiceSoap12) {
             "clientId": result.Description.clientId,
             "packageId": result.Description.packageId
           }
+          console.log(data)
           var transaction = app.models.transaction
           transaction.create(data, function(transactionModel) {
             if (err)

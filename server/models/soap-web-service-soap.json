@@ -1,12 +1,12 @@
 {
-  "name": "soap_WebServiceSoap12",
+  "name": "soap_WebServiceSoap",
   "base": "Model",
   "idInjection": false,
   "options": {
     "validateUpsert": true
   },
   "http": {
-    "path": "WebServiceSoap12"
+    "path": "WebServiceSoap"
   },
   "forceId": "false",
   "excludeBaseProperties": [

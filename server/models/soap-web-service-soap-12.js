@@ -27,7 +27,7 @@ module.exports = function (WebServiceWebServiceSoap12) {
     var utility = require('../../public/utility')
     RequestPayment.ResNumber = utility.generateUniqueId().toString()
     WebServiceWebServiceSoap12.RequestPayment(RequestPayment, function (err, response) {
-      var transaction = server.models.aptransaction
+      var transaction = server.models.apTransaction
       var data = {
         "MerchantID": MERCHANTID,
         "Password": PASSWORD,
@@ -61,7 +61,7 @@ module.exports = function (WebServiceWebServiceSoap12) {
     verifyPayment.MerchantID = MERCHANTID
     verifyPayment.Password = PASSWORD
     WebServiceWebServiceSoap12.verifyPayment(verifyPayment, function (err, response) {
-      var transaction = server.models.aptransaction
+      var transaction = server.models.apTransaction
       transaction.find({'where':{'RefNumber': verifyPayment.refNum}}, function (err, transactionInst) {
         if (err)
           return callback(err, null)

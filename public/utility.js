@@ -1,4 +1,10 @@
+const uuidv4 = require('uuid/v4')
+
 module.exports = {
+  generateUniqueId: function() {
+    return uuidv4()
+  },
+
   generateQueryString: function (data) {
     var ret = []
     for (var d in data)

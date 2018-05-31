@@ -103,5 +103,33 @@
   "package": {
     "dataSource": "mongoDs",
     "public": true
+  },
+  "soap_WebServiceSoap12": {
+    "dataSource": null,
+    "public": true
+  },
+  "RequestPayment": {
+    "dataSource": null,
+    "public": true
+  },
+  "RequestPaymentResponse": {
+    "dataSource": null,
+    "public": true
+  },
+  "PaymentRequestResult": {
+    "dataSource": null,
+    "public": true
+  },
+  "verifyPayment": {
+    "dataSource": null,
+    "public": true
+  },
+  "verifyPaymentResponse": {
+    "dataSource": null,
+    "public": true
+  },
+  "VerifyPaymentResult": {
+    "dataSource": null,
+    "public": true
   }
 }

@@ -1,0 +1,59 @@
+{
+  "name": "apTransaction",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "MerchantID": {
+      "type": "string",
+      "required": true
+    },
+    "Price": {
+      "type": "number",
+      "required": true
+    },
+    "Description": {
+      "type": "object",
+      "required": true
+    },
+    "Paymenter": {
+      "type": "string",
+      "required": false
+    },
+    "Email": {
+      "type": "string",
+      "required": false
+    },
+    "Mobile": {
+      "type": "string",
+      "required": false
+    },
+    "ResNumber": {
+      "type": "string",
+      "required": false
+    },
+    "ReturnPath": {
+      "type": "string",
+      "required": false
+    },
+    "ResultStatus": {
+      "type": "string",
+      "required": true
+    },
+    "VerificationStatus": {
+      "type": "string",
+      "required": false,
+      "default": "nothing"
+    },
+    "RefNumber": {
+      "type": "string",
+      "required": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

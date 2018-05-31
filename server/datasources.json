@@ -18,5 +18,12 @@
     "provider": "filesystem",
     "root": "./fileStorage",
     "maxFileSize": "52428800"
+  },
+  "arianPalDs": {
+    "url": "http://merchant.arianpal.com/WebService.asmx",
+    "name": "arianPalDs",
+    "wsdl": "http://merchant.arianpal.com/WebService.asmx?wsdl",
+    "remotingEnabled": true,
+    "connector": "soap"
   }
 }

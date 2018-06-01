@@ -32,7 +32,7 @@ module.exports = function (WebServiceWebServiceSoap) {
         "MerchantID": MERCHANTID,
         "Password": PASSWORD,
         "Price": Number(RequestPayment.Price),
-        "Description": JSON.parse(RequestPayment.Description),
+        "Description": RequestPayment.Description,
         "Paymenter": RequestPayment.Paymenter,
         "Email": RequestPayment.Email,
         "Mobile": RequestPayment.Mobile,

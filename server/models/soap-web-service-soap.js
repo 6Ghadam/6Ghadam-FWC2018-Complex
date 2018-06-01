@@ -111,7 +111,7 @@ module.exports = function (WebServiceWebServiceSoap) {
     ],
     accepts: [{
       arg: 'RequestPayment',
-      type: 'RequestPayment',
+      type: 'object',
       description: 'RequestPayment',
       required: true,
       http: {
@@ -142,7 +142,7 @@ module.exports = function (WebServiceWebServiceSoap) {
     ],
     accepts: [{
       arg: 'verifyPayment',
-      type: 'verifyPayment',
+      type: 'object',
       description: 'verifyPayment',
       required: true,
       http: {

@@ -67,8 +67,8 @@ module.exports = function (WebServiceWebServiceSoap) {
         if (err)
           return callback(err, null)
         var data = {
-          "VerificationStatus": response.VerifyPaymentResult.ResultStatus.toString(),
-          "PayementedPrice": Number(response.VerifyPaymentResult.PayementedPrice)
+          "VerificationStatus": response.verifyPaymentResult.ResultStatus.toString(),
+          "PayementedPrice": Number(response.verifyPaymentResult.PayementedPrice)
         }
         if (transactionInst[0].RefNumber !== '0')
           return callback(err, null)

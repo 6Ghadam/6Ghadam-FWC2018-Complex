@@ -3,8 +3,8 @@ var server = require('../../server/server');
 
 module.exports = function (WebServiceWebServiceSoap) {
 
-  const MERCHANTID  = '5230502'
-  const PASSWORD    = '5qrykgRTp'
+  const MERCHANTID = '5230502'
+  const PASSWORD = '5qrykgRTp'
 
   var soapDataSource = server.datasources.arianPalDs;
   var WebServiceWebServiceSoap;
@@ -65,28 +65,32 @@ module.exports = function (WebServiceWebServiceSoap) {
     console.log(0)
     WebServiceWebServiceSoap.verifyPayment(verifyPayment, function (err, response) {
       var transaction = server.models.apTransaction
-      transaction.find({'where':{'ResNumber': verifyPayment.ResNum}}, function (err, transactionInst) {
+      transaction.find({
+        'where': {
+          'ResNumber': verifyPayment.ResNum
+        }
+      }, function (err, transactionInst) {
         if (err)
           return callback(err, null)
         console.log(1)
         if (transactionInst[0].RefNumber !== '0')
           return callback(new Error('خطا! تراکنش قبلا ثبت‌ شده است.'), null)
-        var data = {
+        var data1 = {
           "VerificationStatus": response.verifyPaymentResult.ResultStatus.toString()
         }
         if (response.verifyPaymentResult)
           if (response.verifyPaymentResult.PayementedPrice)
-            data.PayementedPrice = response.verifyPaymentResult.PayementedPrice
+            data1.PayementedPrice = response.verifyPaymentResult.PayementedPrice
         if (verifyPayment)
           if (verifyPayment.RefNum)
-            data.refNumber = verifyPayment.RefNum
+            data1.refNumber = verifyPayment.RefNum
         console.log(2)
-        transactionInst[0].updateAttributes(data, function (err, result) {
+        transactionInst[0].updateAttributes(data1, function (err, result) {
           if (err)
             return callback(err, null)
           console.log(3)
           var status = 'Successful'
-          if (response.verifyPaymentResult.ResultStatus !== 'Success') 
+          if (response.verifyPaymentResult.ResultStatus !== 'Success')
             status = response.verifyPaymentResult.ResultStatus
           var data = {
             "time": Math.floor((new Date).getTime()),
@@ -98,11 +102,16 @@ module.exports = function (WebServiceWebServiceSoap) {
           }
           console.log(data)
           var transaction = server.models.transaction
-          transaction.create(data, function(transactionModel) {
+          transaction.create(data, function (transactionModel) {
             if (err)
               return callback(err)
             console.log(4)
-            return callback(null, response)
+            transaction.completePayment(data.clientId, data.packageId, transactionModel.id, function (err, result) {
+              if (err)
+                return callback(err)
+              console.log(5)
+              return callback(null, response)
+            })
           })
         })
       })

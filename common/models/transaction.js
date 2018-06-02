@@ -61,4 +61,59 @@ module.exports = function(transaction) {
 		})
 	})
 	
+	transaction.completePayment = function(clientId, packageId, transactionId, next) {
+		var client = app.models.client
+		var package = app.models.package
+		client.findById(clientId.toString(), function(err, clientInst) {
+			if (err)
+				return next(err)
+      if (!clientInst)
+        return next(new Error('خطا! کاربری با این مشخصات وجود ندارد'))
+			package.findById(packageId.toString(), function(err, packageInst) {
+				if (err)
+					return next(err)
+				if (!packageInst)
+					return next(new Error('خطا! پکیجی با این مشخصات وجود ندارد'))	
+				transaction.findById(transactionId.toString(), function(err, modelInstance) {
+					if (err)
+						return next(err)
+					if (!packageInst)
+						return next(new Error('خطا! تراکنشی با این مشخصات وجود ندارد'))	
+					modelInstance.clientRel(clientInst)
+					modelInstance.packageRel(packageInst)
+					if (modelInstance.status === statusConfig.successful) {
+						var newChances = Number(clientInst.accountInfoModel.chances) + Number(packageInst.chances)
+						clientInst.accountInfo.update({'chances': newChances}, function(err, instance) {
+							if (err)
+								return next(err)
+							transaction.find({where:{'clientId': clientInst.id.toString(), 'status': statusConfig.successful}, limit: 50000}, function(err, transactionList) {
+								if (err)
+									return next(err)
+								if (transactionList.length == 1 && clientInst.referrer) {
+									client.findById(clientInst.referrer.toString(), function(err, referrerInst) {
+										if (err)
+											return next(err)
+										if (!referrerInst)
+											return next()
+										var newReferrerChances = Number(referrerInst.accountInfoModel.chances) + 5
+										referrerInst.accountInfo.update({'chances': newReferrerChances}, function(err, result) {
+											if (err)
+												return next(err)
+											return next()
+										})
+									})
+								} else {
+									return next()
+								}
+							})
+						})
+					}
+					else {
+						return next()
+					}		
+				})
+			})
+		})		
+	}
+
 }

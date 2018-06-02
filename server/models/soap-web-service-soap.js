@@ -41,7 +41,6 @@ module.exports = function (WebServiceWebServiceSoap) {
         "ResultStatus": response.RequestPaymentResult.ResultStatus,
         "PaymentPath": response.RequestPaymentResult.PaymentPath
       }
-      console.log(data)
       transaction.create(data, function (err, result) {
         if (err)
           return callback(err, null)
@@ -62,7 +61,6 @@ module.exports = function (WebServiceWebServiceSoap) {
     verifyPayment.Password = PASSWORD
     if (!verifyPayment.RefNum || !verifyPayment.ResNum || !verifyPayment.Price)
       return callback(new Error('خطا! پارامتر‌های تائید پرداخت دستکاری شده‌اند.'))
-    console.log(0)
     WebServiceWebServiceSoap.verifyPayment(verifyPayment, function (err, response) {
       var transaction = server.models.apTransaction
       transaction.find({
@@ -72,7 +70,6 @@ module.exports = function (WebServiceWebServiceSoap) {
       }, function (err, transactionInst) {
         if (err)
           return callback(err, null)
-        console.log(1)
         if (transactionInst[0].RefNumber !== '0')
           return callback(new Error('خطا! تراکنش قبلا ثبت‌ شده است.'), null)
         var data1 = {
@@ -84,11 +81,9 @@ module.exports = function (WebServiceWebServiceSoap) {
         if (verifyPayment)
           if (verifyPayment.RefNum)
             data1.refNumber = verifyPayment.RefNum
-        console.log(2)
         transactionInst[0].updateAttributes(data1, function (err, result) {
           if (err)
             return callback(err, null)
-          console.log(3)
           var status = 'Successful'
           if (response.verifyPaymentResult.ResultStatus !== 'Success')
             status = response.verifyPaymentResult.ResultStatus
@@ -100,16 +95,13 @@ module.exports = function (WebServiceWebServiceSoap) {
             "clientId": result.Description.clientId,
             "packageId": result.Description.packageId
           }
-          console.log(data)
           var transaction = server.models.transaction
           transaction.create(data, function (err, transactionModel) {
             if (err)
               return callback(err)
-            console.log(4)
             transaction.completePayment(data.clientId, data.packageId, transactionModel.id, function (err, result) {
               if (err)
                 return callback(err)
-              console.log(5)
               return callback(null, response)
             })
           })

@@ -102,7 +102,7 @@ module.exports = function (WebServiceWebServiceSoap) {
           }
           console.log(data)
           var transaction = server.models.transaction
-          transaction.create(data, function (transactionModel) {
+          transaction.create(data, function (err, transactionModel) {
             if (err)
               return callback(err)
             console.log(4)

@@ -60,12 +60,12 @@ module.exports = function (WebServiceWebServiceSoap) {
   WebServiceWebServiceSoap.verifyPayment = function (verifyPayment, callback) {
     verifyPayment.MerchantID = MERCHANTID
     verifyPayment.Password = PASSWORD
-    if (!verifyPayment.refNum || !verifyPayment.resNum || !verifyPayment.price)
+    if (!verifyPayment.RefNum || !verifyPayment.ResNum || !verifyPayment.Price)
       return callback(new Error('خطا! پارامتر‌های تائید پرداخت دستکاری شده‌اند.'))
     console.log(0)
     WebServiceWebServiceSoap.verifyPayment(verifyPayment, function (err, response) {
       var transaction = server.models.apTransaction
-      transaction.find({'where':{'ResNumber': verifyPayment.resNum}}, function (err, transactionInst) {
+      transaction.find({'where':{'ResNumber': verifyPayment.ResNum}}, function (err, transactionInst) {
         if (err)
           return callback(err, null)
         console.log(1)
@@ -78,8 +78,8 @@ module.exports = function (WebServiceWebServiceSoap) {
           if (response.verifyPaymentResult.PayementedPrice)
             data.PayementedPrice = response.verifyPaymentResult.PayementedPrice
         if (verifyPayment)
-          if (verifyPayment.refNum)
-            data.refNumber = verifyPayment.refNum
+          if (verifyPayment.RefNum)
+            data.refNumber = verifyPayment.RefNum
         console.log(2)
         transactionInst[0].updateAttributes(data, function (err, result) {
           if (err)

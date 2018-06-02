@@ -32,7 +32,7 @@ module.exports = function (WebServiceWebServiceSoap) {
         "MerchantID": MERCHANTID,
         "Password": PASSWORD,
         "Price": Number(RequestPayment.Price),
-        "Description": RequestPayment.Description,
+        "Description": JSON.parse(RequestPayment.Description),
         "Paymenter": RequestPayment.Paymenter,
         "Email": RequestPayment.Email,
         "Mobile": RequestPayment.Mobile,
@@ -97,7 +97,7 @@ module.exports = function (WebServiceWebServiceSoap) {
             "packageId": result.Description.packageId
           }
           console.log(data)
-          var transaction = app.models.transaction
+          var transaction = server.models.transaction
           transaction.create(data, function(transactionModel) {
             if (err)
               return callback(err)

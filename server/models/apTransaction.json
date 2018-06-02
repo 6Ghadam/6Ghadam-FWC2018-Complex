@@ -42,6 +42,10 @@
       "type": "string",
       "required": true
     },
+    "PaymentedPrice": {
+      "type": "string",
+      "required": false
+    },
     "VerificationStatus": {
       "type": "string",
       "required": false,
@@ -49,7 +53,8 @@
     },
     "RefNumber": {
       "type": "string",
-      "required": false
+      "required": false,
+      "default": "0"
     }
   },
   "validations": [],

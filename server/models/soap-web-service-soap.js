@@ -39,8 +39,7 @@ module.exports = function (WebServiceWebServiceSoap) {
         "ResNumber": RequestPayment.ResNumber.toString(),
         "ReturnPath": RequestPayment.ReturnPath,
         "ResultStatus": response.RequestPaymentResult.ResultStatus,
-        "PaymentPath": response.RequestPaymentResult.PaymentPath,
-        "RefNumber": RequestPayment.ResNumber.toString(),
+        "PaymentPath": response.RequestPaymentResult.PaymentPath
       }
       console.log(data)
       transaction.create(data, function (err, result) {
@@ -61,26 +60,37 @@ module.exports = function (WebServiceWebServiceSoap) {
   WebServiceWebServiceSoap.verifyPayment = function (verifyPayment, callback) {
     verifyPayment.MerchantID = MERCHANTID
     verifyPayment.Password = PASSWORD
+    if (!verifyPayment.refNum || !verifyPayment.resNum || !verifyPayment.price)
+      return callback(new Error('خطا! پارامتر‌های تائید پرداخت دستکاری شده‌اند.'))
+    console.log(0)
     WebServiceWebServiceSoap.verifyPayment(verifyPayment, function (err, response) {
       var transaction = server.models.apTransaction
-      transaction.find({'where':{'RefNumber': verifyPayment.refNum}}, function (err, transactionInst) {
+      transaction.find({'where':{'ResNumber': verifyPayment.resNum}}, function (err, transactionInst) {
         if (err)
           return callback(err, null)
-        var data = {
-          "VerificationStatus": response.verifyPaymentResult.ResultStatus.toString(),
-          "PayementedPrice": Number(response.verifyPaymentResult.PayementedPrice)
-        }
+        console.log(1)
         if (transactionInst[0].RefNumber !== '0')
-          return callback(err, null)
+          return callback(new Error('خطا! تراکنش قبلا ثبت‌ شده است.'), null)
+        var data = {
+          "VerificationStatus": response.verifyPaymentResult.ResultStatus.toString()
+        }
+        if (response.verifyPaymentResult)
+          if (response.verifyPaymentResult.PayementedPrice)
+            data.PayementedPrice = response.verifyPaymentResult.PayementedPrice
+        if (verifyPayment)
+          if (verifyPayment.refNum)
+            data.refNumber = verifyPayment.refNum
+        console.log(2)
         transactionInst[0].updateAttributes(data, function (err, result) {
           if (err)
             return callback(err, null)
+          console.log(3)
           var status = 'Successful'
-          if (response.VerifyPaymentResult.ResultStatus !== 'Success') 
-            status = response.Status
+          if (response.verifyPaymentResult.ResultStatus !== 'Success') 
+            status = response.verifyPaymentResult.ResultStatus
           var data = {
             "time": Math.floor((new Date).getTime()),
-            "price": Number(PaymentVerification.PayementedPrice),
+            "price": Number(response.verifyPaymentResult.PayementedPrice),
             "status": status,
             "receiptInfo": result,
             "clientId": result.Description.clientId,
@@ -91,6 +101,7 @@ module.exports = function (WebServiceWebServiceSoap) {
           transaction.create(data, function(transactionModel) {
             if (err)
               return callback(err)
+            console.log(4)
             return callback(null, response)
           })
         })

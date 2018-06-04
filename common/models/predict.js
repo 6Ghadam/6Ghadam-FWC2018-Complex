@@ -47,8 +47,9 @@ module.exports = function(predict) {
 							if (err)
 								return cb(err)
 							var newRoundWins = Number(clientInst.accountInfoModel.roundWins) + 1
+							var newChances = Number(clientInst.accountInfoModel.chances) + 1
 							var newTotalPoints = Number(clientInst.accountInfoModel.totalPoints) + Number(predictInstance.point)
-							clientInst.accountInfo.update({'roundWins': newRoundWins, 'totalPoints': newTotalPoints}, function(err, accountInst) {
+							clientInst.accountInfo.update({'roundWins': newRoundWins, 'totalPoints': newTotalPoints, 'chances': newChances}, function(err, accountInst) {
 								if (err)
 									return cb(err)
 								var leaguePoint = 0

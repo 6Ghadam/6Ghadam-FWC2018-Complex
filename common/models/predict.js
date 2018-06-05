@@ -456,4 +456,29 @@ module.exports = function(predict) {
 		})
 	})
 
+  predict.samplePredicts = function (callback) {
+		predict.find({'where':{'status': 'working'}, limit: 10}, function(err, predictList) {
+			if (err)
+				return callback(err)
+			if (predictList.length == 0)
+				return callback(new Error('خطا! پیش‌بینی‌‌ای برای نمایش وجود ندارد'))
+			return callback(null, predictList)
+		})
+	}
+
+  predict.remoteMethod('samplePredicts', {
+    accepts: [],
+    description: 'get 10 sample predicts',
+    http: {
+      path: '/samplePredicts',
+      verb: 'GET',
+      status: 200,
+      errorStatus: 400
+    },
+    returns: {
+      type: 'object',
+      root: true
+    }
+	})
+
 }

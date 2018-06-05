@@ -457,7 +457,7 @@ module.exports = function(predict) {
 	})
 
   predict.samplePredicts = function (callback) {
-		predict.find({'where':{'status': 'working'}, limit: 10}, function(err, predictList) {
+		predict.find({'where':{'status': statusConfig.working}, limit: 10}, function(err, predictList) {
 			if (err)
 				return callback(err)
 			if (predictList.length == 0)

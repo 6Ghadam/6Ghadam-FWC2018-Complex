@@ -57,5 +57,9 @@ module.exports = {
       if (validator.indexOf(input[i]) <= -1)
         return false
     return true
+  },
+
+  generateRandomNumber: function(min, max) {
+		return Math.floor(Math.random() * (Number(max) - Number(min) + 1) ) + Number(min)
   }
 }

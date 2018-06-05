@@ -101,33 +101,11 @@ module.exports = function(client) {
         return next(new Error('خطا! کاربری با این مشخصات وجود ندارد'))
       if (clientInst.phoneNumber === '09120001122')
         return next()
-      if (clientInst.accountInfoModel.lastLogin == 0 || !clientInst.accountInfoModel.lastLogin) {
-        clientInst.accountInfo.update({'dailyAward': "true", 'lastLogin': utility.getUnixTimeStamp()}, function(err, result) {
-          if (err)
-            return next(err)
-          return next()
-        })
-      }
-      else {
-        function updateLoginDate() {
-          clientInst.accountInfo.update({'lastLogin': utility.getUnixTimeStamp()}, function(err, result) {
-            if (err)
-              return next(err)
-            return next()
-          })
-        }
-        if (clientInst.accountInfoModel.dailyAward === 'false') {
-          var newChances = clientInst.accountInfoModel.chances + 3
-          clientInst.accountInfo.update({'dailyAward': "true", 'chances': newChances}, function(err, result) {
-            if (err)
-              return next(err)
-            updateLoginDate()
-          })
-        }
-        else {
-          updateLoginDate()
-        }  
-      }
+      clientInst.accountInfo.update({'lastLogin': Number(utility.getUnixTimeStamp())}, function(err, result) {
+        if (err)
+          return next(err)
+        return next()
+      })
     })
   })
 
@@ -581,6 +559,53 @@ module.exports = function(client) {
     http: {
       path: '/changePhone',
       verb: 'PUT',
+      status: 200,
+      errorStatus: 400
+    },
+    returns: {
+			type: 'object',
+			root: true
+    }
+  })
+
+  client.askDailyAward = function (clientId, callback) {
+    client.findById(clientId.toString(), function(err, clientInst) {
+      if (err)
+        return callback(err)
+      if (!clientInst)
+        return callback(new Error('خطا! کاربری با این مشخصات وجود ندارد'))
+      if (clientInst.accountInfoModel.dailyAward === 'false') {
+        var current = Number(clientInst.accountInfoModel.chances)
+        var award = Number(utility.generateRandomNumber(7, 12))
+        var newChances = current + award
+        clientInst.accountInfo.update({'dailyAward': "true", 'chances': newChances}, function(err, result) {
+          if (err)
+            return callback(err)
+          var model = {
+            current: current,
+            award: award
+          }
+          return callback(null, model)
+        })
+      }
+      else
+        return callback(new Error('خطا! شما قبلا جایزه روزانه خود را دریافت کرده‌اید.'))
+    })
+  }
+
+  client.remoteMethod('askDailyAward', {
+    description: 'ask for daily award',
+    accepts: [{
+      arg: 'clientId',
+      type: 'string',
+      required: true,
+      http: {
+        source: 'path'
+      }
+    }],
+    http: {
+      path: '/:clientId/askDailyAward',
+      verb: 'GET',
       status: 200,
       errorStatus: 400
     },

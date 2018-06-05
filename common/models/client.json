@@ -180,6 +180,12 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "changePhone"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "askDailyAward"
     }
   ],
   "methods": {}

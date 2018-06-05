@@ -186,6 +186,12 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "askDailyAward"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "count"
     }
   ],
   "methods": {}

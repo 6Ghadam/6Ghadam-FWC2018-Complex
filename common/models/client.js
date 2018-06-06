@@ -568,7 +568,11 @@ module.exports = function(client) {
     }
   })
 
-  client.askDailyAward = function (clientId, callback) {
+  client.askDailyAward = function (ctx, clientId, callback) {
+    if (!ctx.req.accessToken)
+      return callback(new Error('خطا! برای گرفتن شانس هدیه نیاز است که ابتدا وارد شوید'))
+    if (ctx.req.accessToken.userId.toString() !== clientId.toString())
+      return callback(new Error('خطا! شما امکان گرفتن شانس هدیه را ندارید'))
     client.findById(clientId.toString(), function(err, clientInst) {
       if (err)
         return callback(err)
@@ -596,6 +600,12 @@ module.exports = function(client) {
   client.remoteMethod('askDailyAward', {
     description: 'ask for daily award',
     accepts: [{
+      arg: 'ctx',
+      type: 'object',
+      http: {
+        source: 'context'
+      }
+    }, {
       arg: 'clientId',
       type: 'string',
       required: true,

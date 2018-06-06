@@ -593,7 +593,7 @@ module.exports = function(client) {
         })
       }
       else
-        return callback(new Error('خطا! شما قبلا جایزه روزانه خود را دریافت کرده‌اید'))
+        return callback(null)
     })
   }
 

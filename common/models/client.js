@@ -24,7 +24,7 @@ var persianize = require('persianize')
 
 module.exports = function(client) {
 
-	var dailyPredict = cron.job("00 00 00 * * 1-7", function () {
+	var dailyPredict = cron.job("00 00 00 * * *", function () {
     client.find({limit: 50000}, function(err, clientList) {
       if (err)
         return console.error(err)
@@ -593,7 +593,7 @@ module.exports = function(client) {
         })
       }
       else
-        return callback(new Error('خطا! شما قبلا جایزه روزانه خود را دریافت کرده‌اید.'))
+        return callback(new Error('خطا! شما قبلا جایزه روزانه خود را دریافت کرده‌اید'))
     })
   }
 

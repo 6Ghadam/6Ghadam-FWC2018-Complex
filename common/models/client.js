@@ -24,7 +24,7 @@ var persianize = require('persianize')
 
 module.exports = function(client) {
 
-	var dailyPredict = cron.job("00 00 00 * * 1-7", function () {
+	var dailyPredict = cron.job("00 00 00 * * *", function () {
     client.find({limit: 50000}, function(err, clientList) {
       if (err)
         return console.error(err)
@@ -101,33 +101,11 @@ module.exports = function(client) {
         return next(new Error('خطا! کاربری با این مشخصات وجود ندارد'))
       if (clientInst.phoneNumber === '09120001122')
         return next()
-      if (clientInst.accountInfoModel.lastLogin == 0 || !clientInst.accountInfoModel.lastLogin) {
-        clientInst.accountInfo.update({'dailyAward': "true", 'lastLogin': utility.getUnixTimeStamp()}, function(err, result) {
-          if (err)
-            return next(err)
-          return next()
-        })
-      }
-      else {
-        function updateLoginDate() {
-          clientInst.accountInfo.update({'lastLogin': utility.getUnixTimeStamp()}, function(err, result) {
-            if (err)
-              return next(err)
-            return next()
-          })
-        }
-        if (clientInst.accountInfoModel.dailyAward === 'false') {
-          var newChances = clientInst.accountInfoModel.chances + 3
-          clientInst.accountInfo.update({'dailyAward': "true", 'chances': newChances}, function(err, result) {
-            if (err)
-              return next(err)
-            updateLoginDate()
-          })
-        }
-        else {
-          updateLoginDate()
-        }  
-      }
+      clientInst.accountInfo.update({'lastLogin': Number(utility.getUnixTimeStamp())}, function(err, result) {
+        if (err)
+          return next(err)
+        return next()
+      })
     })
   })
 
@@ -581,6 +559,63 @@ module.exports = function(client) {
     http: {
       path: '/changePhone',
       verb: 'PUT',
+      status: 200,
+      errorStatus: 400
+    },
+    returns: {
+			type: 'object',
+			root: true
+    }
+  })
+
+  client.askDailyAward = function (ctx, clientId, callback) {
+    if (!ctx.req.accessToken)
+      return callback(new Error('خطا! برای گرفتن شانس هدیه نیاز است که ابتدا وارد شوید'))
+    if (ctx.req.accessToken.userId.toString() !== clientId.toString())
+      return callback(new Error('خطا! شما امکان گرفتن شانس هدیه را ندارید'))
+    client.findById(clientId.toString(), function(err, clientInst) {
+      if (err)
+        return callback(err)
+      if (!clientInst)
+        return callback(new Error('خطا! کاربری با این مشخصات وجود ندارد'))
+      if (clientInst.accountInfoModel.dailyAward === 'false') {
+        var current = Number(clientInst.accountInfoModel.chances)
+        var award = Number(utility.generateRandomNumber(7, 12))
+        var newChances = current + award
+        clientInst.accountInfo.update({'dailyAward': "true", 'chances': newChances}, function(err, result) {
+          if (err)
+            return callback(err)
+          var model = {
+            current: current,
+            award: award
+          }
+          return callback(null, model)
+        })
+      }
+      else
+        return callback(null)
+    })
+  }
+
+  client.remoteMethod('askDailyAward', {
+    description: 'ask for daily award',
+    accepts: [{
+      arg: 'ctx',
+      type: 'object',
+      http: {
+        source: 'context'
+      }
+    }, {
+      arg: 'clientId',
+      type: 'string',
+      required: true,
+      http: {
+        source: 'path'
+      }
+    }],
+    http: {
+      path: '/:clientId/askDailyAward',
+      verb: 'GET',
       status: 200,
       errorStatus: 400
     },

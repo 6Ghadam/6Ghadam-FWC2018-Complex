@@ -162,7 +162,7 @@ module.exports = function(exact) {
 	startExacts.start()
 	finishExacts.start()
 
-	var weeklyReduction = cron.job("0 0 0 * * 0", function () {
+	var weeklyReduction = cron.job("0 0 0 * * *", function () {
 		var time = utility.getUnixTimeStamp()
 		exact.find({
 			where: {

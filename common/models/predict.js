@@ -47,8 +47,9 @@ module.exports = function(predict) {
 							if (err)
 								return cb(err)
 							var newRoundWins = Number(clientInst.accountInfoModel.roundWins) + 1
+							var newChances = Number(clientInst.accountInfoModel.chances) + 1
 							var newTotalPoints = Number(clientInst.accountInfoModel.totalPoints) + Number(predictInstance.point)
-							clientInst.accountInfo.update({'roundWins': newRoundWins, 'totalPoints': newTotalPoints}, function(err, accountInst) {
+							clientInst.accountInfo.update({'roundWins': newRoundWins, 'totalPoints': newTotalPoints, 'chances': newChances}, function(err, accountInst) {
 								if (err)
 									return cb(err)
 								var leaguePoint = 0
@@ -453,6 +454,31 @@ module.exports = function(predict) {
 				})
 			}
 		})
+	})
+
+  predict.samplePredicts = function (callback) {
+		predict.find({'where':{'status': statusConfig.working}, limit: 10}, function(err, predictList) {
+			if (err)
+				return callback(err)
+			if (predictList.length == 0)
+				return callback(new Error('خطا! پیش‌بینی‌‌ای برای نمایش وجود ندارد'))
+			return callback(null, predictList)
+		})
+	}
+
+  predict.remoteMethod('samplePredicts', {
+    accepts: [],
+    description: 'get 10 sample predicts',
+    http: {
+      path: '/samplePredicts',
+      verb: 'GET',
+      status: 200,
+      errorStatus: 400
+    },
+    returns: {
+      type: 'object',
+      root: true
+    }
 	})
 
 }
